@@ -34,7 +34,6 @@ public protocol TelegramPickerResourceProvider {
     
     /// Perform dismisser in your action block to dismiss this alert from a presenting controller.
     func localizedAlert(failure: Failure) -> UIAlertController?
-    
-    func resourceProviderForLocationPicker() -> LocationPickerViewControllerResourceProvider?    
+       
 }
 

@@ -7,8 +7,6 @@ public typealias TelegramSelection = (TelegramSelectionType) -> ()
 public enum TelegramSelectionType {
     case media([PHAsset])
     case photoLibrary
-    case location(Location?)
-    case contact(Contact?)
     case camera(Camera.PreviewStream)
     case document
     case photosAsDocuments([PHAsset])
@@ -40,8 +38,6 @@ final public class TelegramPickerViewController: UIViewController {
     
     public enum ButtonType: Int {
         case photoOrVideo
-        case location
-        case contact
         case file
         case sendPhotos
         case documentAsFile
@@ -768,7 +764,7 @@ final public class TelegramPickerViewController: UIViewController {
     
     private func buttonsForMode(_ mode: Mode) -> [ButtonType] {
         switch mode {
-        case .normal: return [.photoOrVideo, .file, .location, .contact]
+        case .normal: return [.photoOrVideo, .file]
         case .bigPhotoPreviews: return [.sendPhotos, .photoAsFile]
         case .documentType: return [.documentAsFile, .photoAsFile]
         }
@@ -799,22 +795,7 @@ final public class TelegramPickerViewController: UIViewController {
             alertController?.dismiss(animated: true) {
                 selection(.document)
             }
-            
-        case .location:
-            let selection = self.selection
-            let provider = self.localizer.resourceProviderForLocationPicker()
-            alertController?.addLocationPicker(location: nil,
-                                               resourceProvider: provider,
-                                               completion: { location in
-                                                selection(TelegramSelectionType.location(location))
-            })
-            
-        case .contact:
-            let selection = self.selection
-            alertController?.addContactsPicker(localizer: localizer) { contact in
-                selection(TelegramSelectionType.contact(contact))
-            }
-            
+
         case .sendPhotos:
             let assets = selectedAssets
             let selection = self.selection
@@ -1155,8 +1136,6 @@ extension TelegramPickerViewController: GalleryItemsDelegate {
         switch button {
         case .photoOrVideo: localizableButton = .photoOrVideo
         case .file: localizableButton = .file
-        case .location: localizableButton = .location
-        case .contact: localizableButton = .contact
         case .sendPhotos: localizableButton = .photos(count: selectedAssets.count)
         case .documentAsFile: localizableButton = .sendDocumentAsFile
         case .photoAsFile: localizableButton = .sendPhotoAsFile(count: selectedAssets.count)
